@@ -7,21 +7,20 @@ Once a person is on a team list, have a way to remove them from a team assignmen
 Finally, have a way to reset things back to the original state of the game at the beginning.
 */
 import React, { Component } from 'react';
-import Players from './Players';
+import Player from './Player';
 import './App.css';
 import get from 'lodash/get';
 
 const data = {
   // hardcode users in game
   "players": [
-    {"name": "Jesse Larson", "index": 1},
+    {"name": "Jesse Larson" },
     {"name": "Mark Isaiah"},
     {"name": "Chris Blue"}, 
     {"name": "Vanessa Ferguson"}, 
   ],
-  "team1": [''],
-  "team2": [''],
-  "currentPlayer": "", 
+  "team1": [],
+  "team2": [],
 }
 
 class App extends Component {
@@ -39,13 +38,14 @@ class App extends Component {
   // when add to team 2 btn is pushed, remove name from unassigned list and show in team 2 list
 
 
-  handleTeam1Click(player, index) {
+  handleTeam1Click(index) {
     //I need my arrays
     let playerArray = this.state.players.slice();
     let team1Array = this.state.team1.slice();
-    team1Array.push(player);
-    playerArray.shift(player);
- 
+    // using chaining by calling shift after splice(returns an array)
+    const removedPlayer = playerArray.splice(index, 1).shift();
+    team1Array.push(removedPlayer);
+
     this.setState({
       team1: team1Array,
       players: playerArray,
@@ -53,14 +53,13 @@ class App extends Component {
 
   }
 
-  handleTeam2Click(player) {
+  handleTeam2Click(index) {
     //I need my array
     let playerArray = this.state.players.slice();
     let team2Array = this.state.team2.slice();
 
-    //Whenever i click add to team 2 btn, push player into team2 array
-    team2Array.push(player);
-    playerArray.shift(player);
+    const removedPlayer = playerArray.splice(index, 1).shift();
+    team2Array.push(removedPlayer);
 
     this.setState({
       team2: team2Array,
@@ -69,17 +68,50 @@ class App extends Component {
   }
 
   render() {
-   
+    console.log('inRender');
     const players = this.state.players.map(function(player, index){
       return (
-        <div className="player">
-
-          <Players
-            key={index} 
-            players={player}
+        // every element needs a key(includes this div too)
+        <div key={`player-wrapper-${index}`} className="player">
+          <Player
+            // key is hidden so you can't access inside actual component
+            key={`player-${index}`}
+            player={player}
             handleTeam1Click={this.handleTeam1Click}
             handleTeam2Click={this.handleTeam2Click}
-            removeComment={this.removeComment}
+            index={index}
+          />
+        </div>
+      );
+    },this);
+
+    const team1 = this.state.team1.map(function (player, index){
+      return (
+        // every element needs a key(includes this div too)
+        <div key={`player-wrapper-${index}`} className="player">
+          <Player
+            // key is hidden so you can't access inside actual component
+            key={`player-${index}`}
+            player={player}
+            handleTeam1Click={this.handleTeam1Click}
+            handleTeam2Click={this.handleTeam2Click}
+            index={index}
+          />
+        </div>
+      );
+    },this);
+
+    const team2 = this.state.team2.map(function (player, index){
+       return (
+        // every element needs a key(includes this div too)
+        <div key={`player-wrapper-${index}`} className="player">
+          <Player
+            // key is hidden so you can't access inside actual component
+            key={`player-${index}`}
+            player={player}
+            handleTeam1Click={this.handleTeam1Click}
+            handleTeam2Click={this.handleTeam2Click}
+            index={index}
           />
         </div>
       );
@@ -95,12 +127,12 @@ class App extends Component {
         <div className="teams">
           <div >
             <h3>Team Adam</h3>
-            <p>{this.state.team1}</p>
+            {team1}
           </div>
 
           <div>
             <h3>Team Alicia</h3>
-            <p>{this.state.team2}</p>
+            {team2}
           </div>
         </div>
       </div>
