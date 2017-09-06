@@ -14,10 +14,10 @@ import get from 'lodash/get';
 const data = {
   // hardcode users in game
   "players": [
-    {"name": "Jesse Larson" },
-    {"name": "Mark Isaiah"},
-    {"name": "Chris Blue"}, 
-    {"name": "Vanessa Ferguson"}, 
+    {"name": "Jesse Larson", "team":0 },
+    {"name": "Mark Isaiah", "team":0},
+    {"name": "Chris Blue", "team":0}, 
+    {"name": "Vanessa Ferguson", "team":0}, 
   ],
   "team1": [],
   "team2": [],
@@ -68,7 +68,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('inRender');
     const players = this.state.players.map(function(player, index){
       return (
         // every element needs a key(includes this div too)
